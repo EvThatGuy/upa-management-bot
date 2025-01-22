@@ -6,13 +6,15 @@ from datetime import datetime
 import asyncio
 
 # Log channel ID
-LOG_CHANNEL_ID = 974506795714351168
+LOG_CHANNEL_ID = 974506795714351168  # Replace with your log channel ID
+
+# Allowed announcement channel ID
+ANNOUNCEMENT_CHANNEL_ID = 123456789012345678  # Replace with your announcement channel ID
 
 # Intents and bot setup
 intents = discord.Intents.default()
-intents.messages = True
-intents.guilds = True
-intents.members = True
+intents.guilds = True  # Required for guild-related events
+intents.members = True  # Required for member join events or role assignment
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Dictionary to track invite links and their corresponding roles
@@ -83,6 +85,12 @@ async def create_invite(ctx, role: discord.Role, max_uses: int = 0, expire_after
 @bot.command(name="announce")
 @commands.has_permissions(manage_messages=True)
 async def announce(ctx, channel: discord.TextChannel, title: str, image_url: str, button_label: str, button_url: str, *, message: str):
+    # Check if the specified channel is the allowed announcement channel
+    if channel.id != ANNOUNCEMENT_CHANNEL_ID:
+        await ctx.send(f"Announcements can only be posted in <#{ANNOUNCEMENT_CHANNEL_ID}>.")
+        return
+
+    # Create and send the announcement
     embed = Embed(
         title=title,
         description=message,
@@ -93,12 +101,17 @@ async def announce(ctx, channel: discord.TextChannel, title: str, image_url: str
     view = View()
     view.add_item(button)
     await channel.send(embed=embed, view=view)
-    await ctx.send(f"Announcement sent to {channel.mention}.")
+    await ctx.send(f"Announcement successfully posted in {channel.mention}.")
 
 # Schedule an announcement
 @bot.command(name="schedule")
 @commands.has_permissions(manage_messages=True)
 async def schedule(ctx, channel: discord.TextChannel, title: str, image_url: str, button_label: str, button_url: str, time: str, *, message: str):
+    # Check if the specified channel is the allowed announcement channel
+    if channel.id != ANNOUNCEMENT_CHANNEL_ID:
+        await ctx.send(f"Scheduled announcements can only be posted in <#{ANNOUNCEMENT_CHANNEL_ID}>.")
+        return
+
     try:
         scheduled_time = datetime.strptime(time, "%Y-%m-%d %H:%M")
         if scheduled_time <= datetime.now():
