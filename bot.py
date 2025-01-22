@@ -27,8 +27,8 @@ async def on_ready():
     print(f"UPA Management Bot is ready. Logged in as {bot.user}!")
 
 # Help Command
-@bot.command(name="help")
-async def help_command(ctx):
+@bot.command(name="bothelp")
+async def bothelp_command(ctx):
     """
     Provide a list of commands and usage instructions.
     """
@@ -64,7 +64,7 @@ async def help_command(ctx):
         inline=False
     )
     embed.add_field(
-        name="!help",
+        name="!bothelp",
         value="Displays this help message.",
         inline=False
     )
@@ -184,4 +184,4 @@ async def sync_invites():
         guild_invites[guild.id] = await guild.invites()
 
 # Run the bot with your token (keep quotes around the token)
-bot.run("MTMzMTY5ODk3NTU4OTUzMTY1OQ.Got_Jc.30VK7T_YKqDrGlICroi75Oa0Maj1nsNImLfC1c")
+bot.run("YOUR_BOT_TOKEN")
